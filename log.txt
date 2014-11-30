@@ -1,0 +1,23 @@
+Things
+
+--- Adding Resource Types ---
+Resource type "file" added
+Resource type "sound" added
+
+--- Acquiring Resources ---
+ResourceManager::AcquireResource: file1.txt
+ResourceFactory::CreateStub: file1.txt file
+ResourceManager::LoadResource: file2.jpg
+ResourceFactory::CreateStub: file2.jpg file
+File::Load file2.jpg
+ResourceManager::AcquireResource: file3.lol
+ResourceFactory::CreateStub: file3.lol sound
+
+--- Beginning update loop ---
+File::Load file1.txt
+Sound::Load file3.lol
+
+--- Acquiring Resources Again ---
+ResourceManager::AcquireResource: file1.txt
+ResourceManager::AcquireResource: file2.jpg
+ResourceManager::AcquireResource: file3.lol
