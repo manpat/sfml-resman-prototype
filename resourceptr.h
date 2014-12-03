@@ -11,6 +11,8 @@ struct PtrData{
 
 template<class T>
 class resource_ptr{
+	template<class D>
+	friend class resource_ptr;
 public:
 	typedef resource_ptr<T> rp_t;
 
@@ -18,7 +20,7 @@ protected:
 	void _inc();
 	void _dec();
 
-public:
+protected:
 	T* raw;
 	PtrData* dat;
 

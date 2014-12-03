@@ -1,5 +1,6 @@
 #include "resourcemanager.h"
 #include "baseresource.h"
+#include "luaparser.h"
 
 std::map<string, baseresource_ptr> ResourceManager::resourceMap = {};
 std::queue<baseresource_ptr> ResourceManager::loadingQueue = {};
@@ -14,6 +15,14 @@ void ResourceManager::update(){
 		auto r = loadingQueue.front();
 		r->loadBase();
 		loadingQueue.pop();
+		if(loadingQueue.empty() && loadCompleteCallback) 
+			loadCompleteCallback();
+	}
+
+	if(!unloadingQueue.empty()){
+		auto r = unloadingQueue.front();
+		r->unloadBase();
+		unloadingQueue.pop();
 	}
 }
 void ResourceManager::load(string path, string type, LoadMode lm){
@@ -32,11 +41,41 @@ void ResourceManager::load(string path, string type, LoadMode lm){
 
 	resourceMap[path] = r; // treat path as alias
 }
+void ResourceManager::load(string path, string alias, string type, LoadMode lm){
+	L("ResourceManager::load: ", path);
+
+	if(isResourceLoaded(path)) return;
+
+	auto r = ResourceFactory::createStub(path, type);
+	r->alias = alias;
+
+	if(lm == LoadMode::Block){
+		r->loadBase();
+	}else if(lm == LoadMode::Queue){
+		loadingQueue.push(r);
+	}
+
+	resourceMap[alias] = r;
+}
 void ResourceManager::unload(string alias, UnloadMode um){
-	throw("Not Implemented");
+	L("ResourceManager::unload: ", alias);
+	if(!isResourceLoaded(alias)) return;
+
+	auto r = resourceMap[alias];
+	if(!r->isLoaded()) return;
+
+	if(um == UnloadMode::Block){
+		r->unloadBase();
+	}else if(um == UnloadMode::Queue){
+		unloadingQueue.push(r);
+	}
 }
 void ResourceManager::cleanupUnused(){
-	throw("Not Implemented");
+	for(auto& arp : resourceMap){
+		auto& r = arp.second;
+		if(r.getRefCount() == 1)
+			r->unloadBase();
+	}
 }
 void ResourceManager::reload(string alias){
 	throw("Not Implemented");
@@ -47,7 +86,11 @@ void ResourceManager::initPack(string path){
 	throw("Not Implemented");
 }
 void ResourceManager::loadPack(string path, LoadMode lm){
-	throw("Not Implemented");
+	auto rs = LuaParser::parsePack(path);
+	for(auto r : rs){
+		L("\t", r.values["path"]);
+		load(r.values["path"], r.values["alias"], r.values["type"], lm);
+	}
 }
 void ResourceManager::unloadPack(string path, UnloadMode um){
 	throw("Not Implemented");
@@ -67,18 +110,25 @@ bool ResourceManager::isResourceLoaded(string alias){
 	return resourceMap.find(alias) != resourceMap.end();
 }
 size_t ResourceManager::getNumToLoad(){
-	throw("Not Implemented");
-	return 0;
+	return loadingQueue.size();
 }
 size_t ResourceManager::getRAMUsage(){
 	throw("Not Implemented");
 	return 0;
 }
 size_t ResourceManager::getNumResources(){
-	throw("Not Implemented");
-	return 0;
+	return resourceMap.size();
 }
 std::list<baseresource_ptr> ResourceManager::listAll(){
-	throw("Not Implemented");
-	return std::list<baseresource_ptr>();
+	std::list<baseresource_ptr> l;
+
+	for(auto arp : resourceMap){
+		l.push_back(arp.second);
+	}
+
+	return l;
+}
+
+void ResourceManager::setLoadCompleteCallback(LoadCompleteCallback callback){
+	loadCompleteCallback = callback;
 }

@@ -39,7 +39,8 @@ public:
 	static void init();
 	static void update();
 
-	static void load(string alias, string type, LoadMode = LoadMode::Queue);
+	static void load(string path, string type, LoadMode = LoadMode::Queue);
+	static void load(string path, string alias, string type, LoadMode = LoadMode::Queue);
 	template<typename T> static resource_ptr<T> get(string alias);
 	template<typename T> static resource_ptr<T> acquire(string alias, LoadMode = LoadMode::Queue);
 	static void unload(string alias, UnloadMode = UnloadMode::Block);

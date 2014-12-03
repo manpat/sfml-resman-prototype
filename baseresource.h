@@ -20,6 +20,7 @@ public:
 
 	void loadBase();
 	void unloadBase();
+	void reloadBase();
 
 	virtual void load();
 	virtual void unload();

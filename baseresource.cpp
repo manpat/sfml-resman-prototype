@@ -7,14 +7,25 @@ BaseResource::BaseResource()
 }
 
 void BaseResource::loadBase(){
+	if(loaded) return;
 	load();
 
 	loaded = true;
 }
 void BaseResource::unloadBase(){
+	if(!loaded) return;
 	unload();
 
 	loaded = false;
+}
+void BaseResource::reloadBase(){
+	if(loaded){
+		reload();
+	}else{
+		load();
+	}
+
+	loaded = true;
 }
 
 void BaseResource::load(){

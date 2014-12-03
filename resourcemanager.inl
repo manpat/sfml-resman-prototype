@@ -6,7 +6,7 @@ resource_ptr<T> ResourceManager::get(string alias){
 	L("ResourceManager::get: ", alias);
 
 	if(resourceMap.find(alias) == resourceMap.end()){
-		throw("Not done yet foo'");
+		throw("ResourceManager::get: Not done yet foo'");
 	}else{
 		r = resourceMap[alias];
 		if(r->getType() != T::Type()){
