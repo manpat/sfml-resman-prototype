@@ -5,20 +5,25 @@
 
 using std::string;
 
-class ResourceBase {
+class BaseResource {
 protected:
-	string path;
+	string alias;
 	string type;
+	string filePath;
 	bool isLoaded;
+	size_t refCount;
+	// size_t RAMUsage;
 
 public:
-	ResourceBase(const string& path);
+	BaseResource(const string& path);
 
 	void LoadBase();
 	void UnloadBase();
 
-	virtual void Load();
-	virtual void Unload();
+	virtual void load();
+	virtual void unload();
+	virtual void reload();
+	// static getErrorResource;
 
 	static string Type();
 

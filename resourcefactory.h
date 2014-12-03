@@ -7,23 +7,24 @@
 
 using std::string;
 
-class ResourceBase;
+class BaseResource;
 
 class ResourceFactory{
 public:
-	typedef std::function<ResourceBase*(const string&)> LoaderFunction;
+	typedef std::function<BaseResource* (const string&)> AllocatorFunction;
 
 private:
-	static std::map<string, LoaderFunction> resourceAllocators;
+	static std::map<string, AllocatorFunction> resourceAllocators;
+	static std::map<string, BaseResource*> errorResources;
 
 public:
 	template<typename T>
-	static void AddResourceType();
-	static ResourceBase* CreateStub(const string& path, const string& type);
+	static void addType();
+	static BaseResource* createStub(const string& path, const string& type);
 };
 
 template<typename T>
-void ResourceFactory::AddResourceType(){
+void ResourceFactory::addType(){
 	resourceAllocators[T::Type()] = [](const string& p){
 		return new T(p);
 	};

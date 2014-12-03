@@ -1,16 +1,16 @@
 #include <iostream>
 
 #include "resourcefactory.h"
-#include "resourcebase.h"
+#include "baseresource.h"
 
 using namespace std;
 
-std::map<string, ResourceFactory::LoaderFunction> ResourceFactory::resourceAllocators = {};
+std::map<string, ResourceFactory::AllocatorFunction> ResourceFactory::resourceAllocators = {};
 
-class UnknownResource : public ResourceBase {
+class UnknownResource : public BaseResource {
 public:
 	UnknownResource(const string&)
-		: ResourceBase(""){
+		: BaseResource(""){
 		type = Type();
 	}
 
@@ -26,7 +26,7 @@ public:
 	}
 };
 
-ResourceBase* ResourceFactory::CreateStub(const string& path, const string& type){
+BaseResource* ResourceFactory::CreateStub(const string& path, const string& type){
 	L("ResourceFactory::CreateStub: ", path, ' ', type);
 
 	if(resourceAllocators.find(type) != resourceAllocators.end()){

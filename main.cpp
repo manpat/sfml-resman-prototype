@@ -1,16 +1,16 @@
 #include <iostream>
 #include <vector>
 #include "resourcemanager.h"
-#include "resourcebase.h"
+#include "baseresource.h"
 
 #include "logger.h"
 
 using namespace std;
 
-class File : public ResourceBase {
+class File : public BaseResource {
 public:
 	File(const string& path) 
-		: ResourceBase(path){
+		: BaseResource(path){
 
 		type = Type();
 	}
@@ -27,10 +27,10 @@ public:
 	}
 };
 
-class Sound : public ResourceBase {
+class Sound : public BaseResource {
 public:
 	Sound(const string& p)
-		: ResourceBase(p){
+		: BaseResource(p){
 		type = Type();
 	}
 
