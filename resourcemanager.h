@@ -30,9 +30,9 @@ public:
 	typedef std::function<void()> LoadCompleteCallback;
 
 private:
-	static std::map<string, resource_ptr> resourceMap;
-	static std::queue<resource_ptr> loadingQueue;
-	static std::queue<resource_ptr> unloadingQueue;
+	static std::map<string, baseresource_ptr> resourceMap;
+	static std::queue<baseresource_ptr> loadingQueue;
+	static std::queue<baseresource_ptr> unloadingQueue;
 	static LoadCompleteCallback loadCompleteCallback;
 
 public:
@@ -40,8 +40,8 @@ public:
 	static void update();
 
 	static void load(string alias, string type, LoadMode = LoadMode::Queue);
-	template<typename T> static T* get(string alias);
-	template<typename T> static T* acquire(string alias, LoadMode = LoadMode::Queue);
+	template<typename T> static resource_ptr<T> get(string alias);
+	template<typename T> static resource_ptr<T> acquire(string alias, LoadMode = LoadMode::Queue);
 	static void unload(string alias, UnloadMode = UnloadMode::Block);
 	static void cleanupUnused();
 	static void reload(string alias);
@@ -57,7 +57,7 @@ public:
 	static size_t getNumToLoad();
 	static size_t getRAMUsage();
 	static size_t getNumResources();
-	static std::list<resource_ptr> listAll();
+	static std::list<baseresource_ptr> listAll();
 
 	static void setLoadCompleteCallback(LoadCompleteCallback callback);
 };

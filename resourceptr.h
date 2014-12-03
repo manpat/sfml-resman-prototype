@@ -5,36 +5,48 @@
 
 class BaseResource;
 
+struct PtrData{
+	size_t count;
+};
+
+template<class T>
 class resource_ptr{
 public:
-	struct PtrData{
-		size_t count;
-	};
+	typedef resource_ptr<T> rp_t;
 
 protected:
 	void _inc();
 	void _dec();
 
-protected:
-	BaseResource* raw;
+public:
+	T* raw;
 	PtrData* dat;
 
 public:
 	resource_ptr();
-	resource_ptr(BaseResource* raw);
-	resource_ptr(const resource_ptr& o);
-	resource_ptr(resource_ptr&& o);
+	resource_ptr(T* raw);
+	resource_ptr(const rp_t& o);
+	resource_ptr(rp_t&& o);
 	~resource_ptr();
 
-	resource_ptr& operator= (BaseResource* o);
-	resource_ptr& operator= (resource_ptr& o);
-	resource_ptr& operator= (resource_ptr&& o);
+	rp_t& operator= (T* o);
+	rp_t& operator= (rp_t& o);
+	rp_t& operator= (rp_t&& o);
 
-	BaseResource& operator*();
-	BaseResource* operator->();
+	T& operator*();
+	T* operator->();
 
-	BaseResource* getRaw();
+	template<class D>
+	resource_ptr<D> cast();
+
+	operator bool();
+
+	T* getRaw();
 	size_t getRefCount();
 };
+
+typedef resource_ptr<BaseResource> baseresource_ptr;
+
+#include "resourceptr.inl"
 
 #endif

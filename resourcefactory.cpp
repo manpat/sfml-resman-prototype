@@ -28,7 +28,7 @@ public:
 	}
 };
 
-resource_ptr ResourceFactory::createStub(const string& path, const string& type){
+baseresource_ptr ResourceFactory::createStub(const string& path, const string& type){
 	L("ResourceFactory::createStub: ", type);
 
 	if(resourceAllocators.find(type) != resourceAllocators.end()){

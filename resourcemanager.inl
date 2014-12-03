@@ -1,8 +1,8 @@
 #include "baseresource.h"
 
 template<typename T>
-T* ResourceManager::get(string alias){
-	resource_ptr r = nullptr;
+resource_ptr<T> ResourceManager::get(string alias){
+	baseresource_ptr r = nullptr;
 	L("ResourceManager::get: ", alias);
 
 	if(resourceMap.find(alias) == resourceMap.end()){
@@ -14,16 +14,16 @@ T* ResourceManager::get(string alias){
 		}
 	}
 
-	return static_cast<T*>(r.getRaw()); // FIXME
+	return r.cast<T>();
 }
 
 template<typename T>
-T* ResourceManager::acquire(string alias, LoadMode lm){
-	resource_ptr r = nullptr;
+resource_ptr<T> ResourceManager::acquire(string alias, LoadMode lm){
+	baseresource_ptr r = nullptr;
 	L("ResourceManager::acquire: ", alias);
 
 	if(resourceMap.find(alias) == resourceMap.end()){
-		// check if alias is filepath
+		// TODO check if alias is actually filepath
 		r = ResourceFactory::createStub(alias, T::Type());
 		r->filePath = alias;
 		r->alias = alias;
@@ -42,5 +42,5 @@ T* ResourceManager::acquire(string alias, LoadMode lm){
 		}
 	}
 
-	return static_cast<T*>(r.getRaw()); // FIXME
+	return r.cast<T>();
 }

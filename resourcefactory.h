@@ -12,22 +12,22 @@ class BaseResource;
 
 class ResourceFactory{
 public:
-	typedef std::function<resource_ptr ()> AllocatorFunction;
+	typedef std::function<baseresource_ptr ()> AllocatorFunction;
 
 private:
 	static std::map<string, AllocatorFunction> resourceAllocators;
-	static std::map<string, resource_ptr> errorResources;
+	static std::map<string, baseresource_ptr> errorResources;
 
 public:
 	template<typename T>
 	static void addType();
-	static resource_ptr createStub(const string& path, const string& type);
+	static baseresource_ptr createStub(const string& path, const string& type);
 };
 
 template<typename T>
 void ResourceFactory::addType(){
 	resourceAllocators[T::Type()] = [](){
-		return new T();
+		return baseresource_ptr(new T());
 	};
 
 	L("Resource type \"", T::Type(), "\" added");

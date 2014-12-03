@@ -57,15 +57,16 @@ int main(){
 
 		// These resources haven't been loaded yet so 
 		//	AcquireResource queues loading.
-		ResourceManager::acquire<File>("file1.txt");
-		ResourceManager::load("file2.jpg", File::Type(), LoadMode::Block);
-		auto s = ResourceManager::acquire<Sound>("file3.lol");
+		auto r = ResourceManager::acquire<File>("file1.txt", LoadMode::Queue);
+		// ResourceManager::load("file2.jpg", File::Type(), LoadMode::Block);
+		// auto s = ResourceManager::acquire<Sound>("file3.lol");
+		// L("s ref count ", s.getRefCount());
 
 		L("\n--- Beginning update loop ---");
 
 		// Waits until everything is loaded
 		while(ResourceManager::isLoading())
-		// while(!s->IsLoaded())
+		// while(!s->isLoaded())
 			ResourceManager::update();
 
 		L("\n--- Acquiring Resources Again ---");

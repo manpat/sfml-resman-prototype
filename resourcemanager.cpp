@@ -1,9 +1,9 @@
 #include "resourcemanager.h"
 #include "baseresource.h"
 
-std::map<string, resource_ptr> ResourceManager::resourceMap = {};
-std::queue<resource_ptr> ResourceManager::loadingQueue = {};
-std::queue<resource_ptr> ResourceManager::unloadingQueue = {};
+std::map<string, baseresource_ptr> ResourceManager::resourceMap = {};
+std::queue<baseresource_ptr> ResourceManager::loadingQueue = {};
+std::queue<baseresource_ptr> ResourceManager::unloadingQueue = {};
 ResourceManager::LoadCompleteCallback ResourceManager::loadCompleteCallback = nullptr;
 
 void ResourceManager::init(){
@@ -78,7 +78,7 @@ size_t ResourceManager::getNumResources(){
 	throw("Not Implemented");
 	return 0;
 }
-std::list<resource_ptr> ResourceManager::listAll(){
+std::list<baseresource_ptr> ResourceManager::listAll(){
 	throw("Not Implemented");
-	return std::list<resource_ptr>();
+	return std::list<baseresource_ptr>();
 }
