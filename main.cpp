@@ -15,11 +15,11 @@ public:
 		type = Type();
 	}
 
-	void Load() override {
-		L("File::Load ", path);
+	void load() override {
+		L("File::load ", filePath);
 	}
-	void Unload() override {
-		L("File::Unload ", path);
+	void unload() override {
+		L("File::unload ", filePath);
 	}
 
 	static string Type(){
@@ -34,11 +34,11 @@ public:
 		type = Type();
 	}
 
-	void Load() override {
-		L("Sound::Load ", path);
+	void load() override {
+		L("Sound::load ", filePath);
 	}
-	void Unload() override {
-		L("Sound::Unload ", path);
+	void unload() override {
+		L("Sound::unload ", filePath);
 	}
 
 	static string Type(){
@@ -55,30 +55,30 @@ int main(){
 		L("\n--- Adding Resource Types ---");
 
 		// Create class generating stubs
-		ResourceFactory::AddResourceType<File>();
-		ResourceFactory::AddResourceType<Sound>();
+		ResourceFactory::addType<File>();
+		ResourceFactory::addType<Sound>();
 
 		L("\n--- Acquiring Resources ---");
 
 		// These resources haven't been loaded yet so 
 		//	AcquireResource queues loading.
-		ResourceManager::AcquireResource<File>("file1.txt");
-		ResourceManager::LoadResource("file2.jpg", File::Type(), LoadMode::Block);
-		auto s = ResourceManager::AcquireResource<Sound>("file3.lol");
+		ResourceManager::acquire<File>("file1.txt");
+		ResourceManager::load("file2.jpg", File::Type(), LoadMode::Block);
+		auto s = ResourceManager::acquire<Sound>("file3.lol");
 
 		L("\n--- Beginning update loop ---");
 
 		// Waits until everything is loaded
-		while(ResourceManager::IsLoading())
+		while(ResourceManager::isLoading())
 		// while(!s->IsLoaded())
-			ResourceManager::Update();
+			ResourceManager::update();
 
 		L("\n--- Acquiring Resources Again ---");
 
 		// All resources will now be loaded
-		ResourceManager::AcquireResource<File>("file1.txt");
-		ResourceManager::AcquireResource<File>("file2.jpg");
-		ResourceManager::AcquireResource<Sound>("file3.lol");
+		ResourceManager::acquire<File>("file1.txt");
+		ResourceManager::acquire<File>("file2.jpg");
+		ResourceManager::acquire<Sound>("file3.lol");
 
 	}catch(const char* s){
 		L(s);

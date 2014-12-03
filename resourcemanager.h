@@ -1,4 +1,3 @@
-
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
@@ -9,7 +8,6 @@
 #include <map>
 
 #include "resourcefactory.h"
-#include "resourcebase.h"
 #include "logger.h"
 
 using std::string;
@@ -55,6 +53,7 @@ public:
 	static void switchPacks(string path1, string path2);
 
 	static bool isLoading();
+	static bool isResourceLoaded(string alias);
 	static size_t getNumToLoad();
 	static size_t getRAMUsage();
 	static size_t getNumResources();
@@ -63,30 +62,6 @@ public:
 	static void setLoadCompleteCallback(LoadCompleteCallback callback);
 };
 
-template<typename T>
-T* ResourceManager::AcquireResource(string alias, LoadMode lm){
-	ResourcePtr r = nullptr;
-	L("ResourceManager::AcquireResource: ", alias);
-
-	if(resourceMap.find(alias) == resourceMap.end()){
-		r = ResourceFactory::CreateStub(alias, T::Type());
-
-		if(lm == LoadMode::Block){
-			r->LoadBase();
-		}else if(lm == LoadMode::Queue){
-			loadQueue.push(r);
-		}
-
-		resourceMap[alias] = r;
-	}else{
-		r = resourceMap[alias];
-		if(r->GetType() != T::Type()){
-			L("ResourceManager::AcquireResource: Type mismatch between ", r->GetType(), " and ", T::Type(), ", trying to acquire ", alias);
-		}
-	}
-
-	return static_cast<T*>(r);
-}
-
+#include "resourcemanager.inl"
 
 #endif

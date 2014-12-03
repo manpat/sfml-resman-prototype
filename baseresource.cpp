@@ -2,39 +2,47 @@
 #include "logger.h"
 
 BaseResource::BaseResource(const string& _path)
-	: path(_path), isLoaded(false){
+	: filePath(_path), loaded(false){
 
 }
 
-void BaseResource::LoadBase(){
-	Load();
+void BaseResource::loadBase(){
+	load();
 
-	isLoaded = true;
+	loaded = true;
 }
-void BaseResource::UnloadBase(){
-	Unload();
+void BaseResource::unloadBase(){
+	unload();
 
-	isLoaded = false;
+	loaded = false;
 }
 
-void BaseResource::Load(){
+void BaseResource::load(){
 	L("Tried to load resource base");
 }
-void BaseResource::Unload(){
+void BaseResource::unload(){
 	L("Tried to unload resource base");
+}
+void BaseResource::reload(){
+	L("Tried to reload resource base");
 }
 
 string BaseResource::Type(){
 	return "generic";
 }
 
-string BaseResource::GetType() const{
+string BaseResource::getAlias() const{
+	return alias;
+}
+string BaseResource::getType() const{
 	return type;
 }
-
-string BaseResource::GetPath() const{
-	return path;
+string BaseResource::getPath() const{
+	return filePath;
 }
-bool BaseResource::IsLoaded() const{
-	return isLoaded;
+size_t BaseResource::getRefCount() const{
+	return refCount;
+}
+bool BaseResource::isLoaded() const{
+	return loaded;
 }

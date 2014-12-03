@@ -14,11 +14,14 @@ public:
 		type = Type();
 	}
 
-	void Load() override {
-		L("UnknownResource::Load ", path);
+	void load() override {
+		L("UnknownResource::load ", filePath);
 	}
-	void Unload() override {
-		L("UnknownResource::Unload ", path);
+	void unload() override {
+		L("UnknownResource::unload ", filePath);
+	}
+	void reload() override {
+		L("UnknownResource::reload ", filePath);
 	}
 
 	static string Type(){
@@ -26,8 +29,8 @@ public:
 	}
 };
 
-BaseResource* ResourceFactory::CreateStub(const string& path, const string& type){
-	L("ResourceFactory::CreateStub: ", path, ' ', type);
+BaseResource* ResourceFactory::createStub(const string& path, const string& type){
+	L("ResourceFactory::createStub: ", path, ' ', type);
 
 	if(resourceAllocators.find(type) != resourceAllocators.end()){
 		return resourceAllocators[type](path);
