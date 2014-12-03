@@ -6,16 +6,17 @@
 using std::string;
 
 class BaseResource {
+	friend class ResourceManager;
+	friend class ResourceFactory;
 protected:
 	string alias;
 	string type;
 	string filePath;
 	bool loaded;
-	size_t refCount;
 	// size_t RAMUsage;
 
 public:
-	BaseResource(const string& path);
+	BaseResource();
 
 	void loadBase();
 	void unloadBase();
@@ -30,7 +31,6 @@ public:
 	string getAlias() const;
 	string getType() const;
 	string getPath() const;
-	size_t getRefCount() const;
 	bool isLoaded() const;
 };
 

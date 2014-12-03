@@ -2,19 +2,10 @@
 
 template<typename T>
 T* ResourceManager::get(string alias){
-	ResourcePtr r = nullptr;
+	resource_ptr r = nullptr;
 	L("ResourceManager::get: ", alias);
 
 	if(resourceMap.find(alias) == resourceMap.end()){
-		// r = ResourceFactory::CreateStub(alias, T::Type());
-
-		// if(lm == LoadMode::Block){
-		// 	r->LoadBase();
-		// }else if(lm == LoadMode::Queue){
-		// 	loadQueue.push(r);
-		// }
-
-		// resourceMap[alias] = r;
 		throw("Not done yet foo'");
 	}else{
 		r = resourceMap[alias];
@@ -23,16 +14,19 @@ T* ResourceManager::get(string alias){
 		}
 	}
 
-	return static_cast<T*>(r);
+	return static_cast<T*>(r.getRaw()); // FIXME
 }
 
 template<typename T>
 T* ResourceManager::acquire(string alias, LoadMode lm){
-	ResourcePtr r = nullptr;
+	resource_ptr r = nullptr;
 	L("ResourceManager::acquire: ", alias);
 
 	if(resourceMap.find(alias) == resourceMap.end()){
+		// check if alias is filepath
 		r = ResourceFactory::createStub(alias, T::Type());
+		r->filePath = alias;
+		r->alias = alias;
 
 		if(lm == LoadMode::Block){
 			r->loadBase();
@@ -48,5 +42,5 @@ T* ResourceManager::acquire(string alias, LoadMode lm){
 		}
 	}
 
-	return static_cast<T*>(r);
+	return static_cast<T*>(r.getRaw()); // FIXME
 }

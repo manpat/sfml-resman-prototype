@@ -1,9 +1,9 @@
 #include "resourcemanager.h"
 #include "baseresource.h"
 
-std::map<string, ResourceManager::ResourcePtr> ResourceManager::resourceMap = {};
-std::queue<ResourceManager::ResourcePtr> ResourceManager::loadingQueue = {};
-std::queue<ResourceManager::ResourcePtr> ResourceManager::unloadingQueue = {};
+std::map<string, resource_ptr> ResourceManager::resourceMap = {};
+std::queue<resource_ptr> ResourceManager::loadingQueue = {};
+std::queue<resource_ptr> ResourceManager::unloadingQueue = {};
 ResourceManager::LoadCompleteCallback ResourceManager::loadCompleteCallback = nullptr;
 
 void ResourceManager::init(){
@@ -16,19 +16,21 @@ void ResourceManager::update(){
 		loadingQueue.pop();
 	}
 }
-void ResourceManager::load(string alias, string type, LoadMode lm){
-	L("ResourceManager::load: ", alias);
+void ResourceManager::load(string path, string type, LoadMode lm){
+	L("ResourceManager::load: ", path);
 
-	if(isResourceLoaded(alias)) return;
+	if(isResourceLoaded(path)) return;
 
-	auto r = ResourceFactory::createStub(alias, type);
+	auto r = ResourceFactory::createStub(path, type);
+	r->alias = path;
+
 	if(lm == LoadMode::Block){
 		r->loadBase();
 	}else if(lm == LoadMode::Queue){
 		loadingQueue.push(r);
 	}
 
-	resourceMap[alias] = r;
+	resourceMap[path] = r; // treat path as alias
 }
 void ResourceManager::unload(string alias, UnloadMode um){
 	throw("Not Implemented");
@@ -76,7 +78,7 @@ size_t ResourceManager::getNumResources(){
 	throw("Not Implemented");
 	return 0;
 }
-auto ResourceManager::listAll() -> std::list<ResourcePtr> {
+std::list<resource_ptr> ResourceManager::listAll(){
 	throw("Not Implemented");
-	return std::list<ResourcePtr>();
+	return std::list<resource_ptr>();
 }

@@ -9,9 +9,8 @@ std::map<string, ResourceFactory::AllocatorFunction> ResourceFactory::resourceAl
 
 class UnknownResource : public BaseResource {
 public:
-	UnknownResource(const string&)
-		: BaseResource(""){
-		type = Type();
+	UnknownResource()
+		: BaseResource(){
 	}
 
 	void load() override {
@@ -29,12 +28,15 @@ public:
 	}
 };
 
-BaseResource* ResourceFactory::createStub(const string& path, const string& type){
-	L("ResourceFactory::createStub: ", path, ' ', type);
+resource_ptr ResourceFactory::createStub(const string& path, const string& type){
+	L("ResourceFactory::createStub: ", type);
 
 	if(resourceAllocators.find(type) != resourceAllocators.end()){
-		return resourceAllocators[type](path);
+		auto r = resourceAllocators[type]();
+		r->type = type;
+		r->filePath = path;
+		return r;
 	}
 
-	return new UnknownResource("");
+	return new UnknownResource();
 }

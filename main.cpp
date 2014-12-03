@@ -9,10 +9,7 @@ using namespace std;
 
 class File : public BaseResource {
 public:
-	File(const string& path) 
-		: BaseResource(path){
-
-		type = Type();
+	File() : BaseResource(){
 	}
 
 	void load() override {
@@ -29,9 +26,7 @@ public:
 
 class Sound : public BaseResource {
 public:
-	Sound(const string& p)
-		: BaseResource(p){
-		type = Type();
+	Sound() : BaseResource(){
 	}
 
 	void load() override {

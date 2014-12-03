@@ -8,6 +8,7 @@
 #include <map>
 
 #include "resourcefactory.h"
+#include "resourceptr.h"
 #include "logger.h"
 
 using std::string;
@@ -27,12 +28,11 @@ typedef LoadMode UnloadMode;
 class ResourceManager {
 public:
 	typedef std::function<void()> LoadCompleteCallback;
-	typedef BaseResource* ResourcePtr;
 
 private:
-	static std::map<string, ResourcePtr> resourceMap;
-	static std::queue<ResourcePtr> loadingQueue;
-	static std::queue<ResourcePtr> unloadingQueue;
+	static std::map<string, resource_ptr> resourceMap;
+	static std::queue<resource_ptr> loadingQueue;
+	static std::queue<resource_ptr> unloadingQueue;
 	static LoadCompleteCallback loadCompleteCallback;
 
 public:
@@ -57,7 +57,7 @@ public:
 	static size_t getNumToLoad();
 	static size_t getRAMUsage();
 	static size_t getNumResources();
-	static std::list<ResourcePtr> listAll();
+	static std::list<resource_ptr> listAll();
 
 	static void setLoadCompleteCallback(LoadCompleteCallback callback);
 };

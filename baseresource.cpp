@@ -1,8 +1,8 @@
 #include "baseresource.h"
 #include "logger.h"
 
-BaseResource::BaseResource(const string& _path)
-	: filePath(_path), loaded(false){
+BaseResource::BaseResource()
+	: loaded(false){
 
 }
 
@@ -39,9 +39,6 @@ string BaseResource::getType() const{
 }
 string BaseResource::getPath() const{
 	return filePath;
-}
-size_t BaseResource::getRefCount() const{
-	return refCount;
 }
 bool BaseResource::isLoaded() const{
 	return loaded;
