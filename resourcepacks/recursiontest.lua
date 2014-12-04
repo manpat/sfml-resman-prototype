@@ -4,8 +4,7 @@ return {
 		type = "resourcepack",
 	},
 	{
-		path = "data/test.png",
-		alias = "squiggle",
-		type = "texture",
+		path = "resourcepacks/testpack.lua",
+		type = "resourcepack",
 	},
 }

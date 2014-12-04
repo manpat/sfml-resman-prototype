@@ -8,29 +8,27 @@
 
 using namespace std;
 
-class Sprite : public BaseResource, public sf::Drawable {
+class Texture : public BaseResource{
 private:
-	sf::Sprite sprite;
+	sf::Texture texture;
 
 public:
-	Sprite() : BaseResource(){}
+	Texture() : BaseResource(){}
 
 	void load() override {
-		L("Sprite::load ", filePath);
-		auto t = new sf::Texture();
-		t->loadFromFile(filePath);
-		sprite.setTexture(*t);
+		L("Texture::load ", filePath);
+		texture.loadFromFile(filePath);
 	}
 	void unload() override {
-		L("Sprite::unload ", filePath);
+		L("Texture::unload ", filePath);
 	}
 
-	void draw(sf::RenderTarget& w, sf::RenderStates r) const override {
-		w.draw(sprite);
+	sf::Texture& get(){
+		return texture;
 	}
 
 	static string Type(){
-		return "sprite";
+		return "texture";
 	}
 };
 
@@ -52,12 +50,14 @@ int main(){
 		ResourceManager::setLoadCompleteCallback([](){
 			L("Loading complete");
 		});
-		ResourceFactory::addType<Sprite>();
+		ResourceFactory::addType<Texture>();
 		ResourceManager::loadPack("resourcepacks/testpack.lua", LoadMode::Block);
 
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Things");
 
-		auto res = ResourceManager::get<Sprite>("squiggle");
+		auto res = ResourceManager::get<Texture>("squiggle");
+		sf::Sprite sprite;
+		sprite.setTexture(res->get());
 
 		while(!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
 			sf::Event event;
@@ -68,7 +68,7 @@ int main(){
 			}
 
 			window.clear();
-			window.draw(*res);
+			window.draw(sprite);
 			window.display();
 		}
 

@@ -1,6 +1,9 @@
 #include "luaparser.h"
 #include "logger.h"
 
+#include <algorithm>
+#include <vector>
+
 lua_State* LuaParser::l = nullptr;
 
 void LuaParser::checkAndInit(){
@@ -31,7 +34,9 @@ static string lsat(lua_State* l, int i){
 std::list<ResourceNode> LuaParser::parsePack(const string& path){
 	checkAndInit();
 
+	std::vector<string> packsLoaded = {path};
 	std::list<ResourceNode> nodes = parsePackSingleLevel(path);
+
 	bool done = false;
 
 	while(!done){
@@ -39,10 +44,17 @@ std::list<ResourceNode> LuaParser::parsePack(const string& path){
 		for(auto i = nodes.begin(); i != nodes.end(); i++){
 			if(i->isResourcePack){
 				L("Resource pack");
-				done = false;
-				auto subnodes = parsePackSingleLevel(i->values["path"]);
 
-				nodes.splice(nodes.end(), subnodes);
+				if(std::find(packsLoaded.begin(), packsLoaded.end(), i->values["path"])
+					!= packsLoaded.end()){
+					L("\tCyclic dependency detected: ", i->values["path"]);
+				}else{
+					done = false;
+					auto subnodes = parsePackSingleLevel(i->values["path"]);
+
+					nodes.splice(nodes.end(), subnodes);
+					packsLoaded.push_back(i->values["path"]);
+				}
 
 				i = nodes.erase(i);
 			}
