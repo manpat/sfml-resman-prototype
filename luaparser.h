@@ -20,14 +20,15 @@ private:
 	static lua_State* l;
 	static void checkAndInit();
 
-public:
-	static std::list<ResourceNode> parsePack(const string& path);
-	static std::list<ResourceNode> parsePackSingleLevel(const string& path);
+	public: static std::list<ResourceNode> parsePack(const string& path);
+	private: static std::list<ResourceNode> leafPack(const ResourceNode& node);
 };
 
 struct ResourceNode{
 	bool isResourcePack;
-	std::map<string, string> values;
+	string alias;
+	string path;
+	string type;
 };
 
 #endif

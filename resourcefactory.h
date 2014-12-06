@@ -10,12 +10,22 @@ using std::string;
 
 class BaseResource;
 
-class ResourceFactory{
+class ResourceAllocatorInterface {
 public:
-	typedef std::function<baseresource_ptr ()> AllocatorFunction;
+	virtual baseresource_ptr create() = 0;
+};
 
+template <class T>
+class ResourceAllocatorImplementation : public ResourceAllocatorInterface{
+public:
+	baseresource_ptr create() override {
+		return baseresource_ptr(new T);
+	}
+};
+
+class ResourceFactory{
 private:
-	static std::map<string, AllocatorFunction> resourceAllocators;
+	static std::map<string, ResourceAllocatorInterface*> resourceAllocators;
 	static std::map<string, baseresource_ptr> errorResources;
 
 public:
@@ -26,9 +36,10 @@ public:
 
 template<typename T>
 void ResourceFactory::addType(){
-	resourceAllocators[T::Type()] = [](){
-		return baseresource_ptr(new T());
-	};
+	// resourceAllocators[T::Type()] = [](){
+	// 	return baseresource_ptr(new T());
+	// };
+	resourceAllocators[T::Type()] = new ResourceAllocatorImplementation<T>;
 
 	L("Resource type \"", T::Type(), "\" added");
 }

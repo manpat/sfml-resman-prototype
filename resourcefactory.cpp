@@ -5,7 +5,7 @@
 
 using namespace std;
 
-std::map<string, ResourceFactory::AllocatorFunction> ResourceFactory::resourceAllocators = {};
+std::map<string, ResourceAllocatorInterface*> ResourceFactory::resourceAllocators = {};
 
 class UnknownResource : public BaseResource {
 public:
@@ -32,7 +32,7 @@ baseresource_ptr ResourceFactory::createStub(const string& path, const string& t
 	L("ResourceFactory::createStub: ", type);
 
 	if(resourceAllocators.find(type) != resourceAllocators.end()){
-		auto r = resourceAllocators[type]();
+		auto r = resourceAllocators[type]->create();
 		r->type = type;
 		r->filePath = path;
 		return r;

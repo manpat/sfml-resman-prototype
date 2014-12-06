@@ -56,8 +56,11 @@ int main(){
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Things");
 
 		auto res = ResourceManager::get<Texture>("squiggle");
-		sf::Sprite sprite;
+		auto res2 = ResourceManager::get<Texture>("star");
+		sf::Sprite sprite, sprite2;
 		sprite.setTexture(res->get());
+		sprite2.setTexture(res2->get());
+		sprite2.setPosition(sf::Vector2f(128.f, 128.f));
 
 		while(!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
 			sf::Event event;
@@ -69,6 +72,7 @@ int main(){
 
 			window.clear();
 			window.draw(sprite);
+			window.draw(sprite2);
 			window.display();
 		}
 

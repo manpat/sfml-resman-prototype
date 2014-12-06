@@ -33,9 +33,15 @@ static string lsat(lua_State* l, int i){
 
 std::list<ResourceNode> LuaParser::parsePack(const string& path){
 	checkAndInit();
+	ResourceNode start = {
+		.isResourcePack = true,
+		.alias = "",
+		.path = path,
+		.type = "",
+	};
 
 	std::vector<string> packsLoaded = {path};
-	std::list<ResourceNode> nodes = parsePackSingleLevel(path);
+	std::list<ResourceNode> nodes = leafPack(start);
 
 	bool done = false;
 
@@ -45,15 +51,15 @@ std::list<ResourceNode> LuaParser::parsePack(const string& path){
 			if(i->isResourcePack){
 				L("Resource pack");
 
-				if(std::find(packsLoaded.begin(), packsLoaded.end(), i->values["path"])
+				if(std::find(packsLoaded.begin(), packsLoaded.end(), i->path)
 					!= packsLoaded.end()){
-					L("\tCyclic dependency detected: ", i->values["path"]);
+					L("\tCyclic dependency detected: ", i->path);
 				}else{
 					done = false;
-					auto subnodes = parsePackSingleLevel(i->values["path"]);
+					auto subnodes = leafPack(*i);
 
 					nodes.splice(nodes.end(), subnodes);
-					packsLoaded.push_back(i->values["path"]);
+					packsLoaded.push_back(i->path);
 				}
 
 				i = nodes.erase(i);
@@ -64,11 +70,11 @@ std::list<ResourceNode> LuaParser::parsePack(const string& path){
 	return nodes;
 }
 
-std::list<ResourceNode> LuaParser::parsePackSingleLevel(const string& path){
+std::list<ResourceNode> LuaParser::leafPack(const ResourceNode& node){
 	checkAndInit();
 
-	L("Parsing file ", path);
-	if(luaL_dofile(l, path.data()) != 0){
+	L("Parsing file ", node.path);
+	if(luaL_dofile(l, node.path.data()) != 0){
 		L(lua_tostring(l, -1));
 	}
 
@@ -86,10 +92,16 @@ std::list<ResourceNode> LuaParser::parsePackSingleLevel(const string& path){
 		while(lua_next(l, -2) != 0){
 			string key = lsat(l, -2);
 			string value = lsat(l, -1);
-			if(key == "type" && value == "resourcepack"){
-				n.isResourcePack = true;
-			}else{
-				n.values[key] = value;
+			if(key == "type"){
+				if(value == "resourcepack"){
+					n.isResourcePack = true;
+				}else{
+					n.type = value;
+				}
+			}else if(key == "alias"){
+				n.alias = value;
+			}else if(key == "path"){
+				n.path = value;
 			}
 			lua_pop(l, 1);
 		}

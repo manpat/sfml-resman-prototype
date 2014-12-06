@@ -88,8 +88,8 @@ void ResourceManager::initPack(string path){
 void ResourceManager::loadPack(string path, LoadMode lm){
 	auto rs = LuaParser::parsePack(path);
 	for(auto r : rs){
-		L("\t", r.values["path"]);
-		load(r.values["path"], r.values["alias"], r.values["type"], lm);
+		L("\t", r.path);
+		load(r.path, r.alias, r.type, lm);
 	}
 }
 void ResourceManager::unloadPack(string path, UnloadMode um){
